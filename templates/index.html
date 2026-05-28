@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Модель Эрланга С</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- див для отладки -->
+    <div class="debager">
+        <!-- <pre>
+            {{  result | tojson(indent=2) }}
+        </pre> -->
+    </div>
+    <!-- end -->
+    <div class="container">
+        <p>
+            {{ result.log | safe }}
+        </p>
+        <h2>Модель Эрланга С</h2>
+        <form method="POST">
+            <label>λ (частота поступления запросов):</label>
+            <input type="number" name="lam" required>
+            
+            <label>μ (частота обслуживания каждого сервера):</label>
+            <input type="number" name="mu" required>
+            
+            <label>c (количество серверов):</label>
+            <input type="number" name="c" required>
+            
+            <button type="submit">Рассчитать</button>
+        </form>
+        {% if result.state %}
+        <div class="result">
+            <h3>Результаты:</h3>
+            <p><strong>U</strong> = {{ result.U }}<br>
+                <span class="result-text"><i>коэффициент использования серверов</i></span></p>
+            <p><strong>P<span style="font-size: 9px;">0</span></strong>  = {{ result.P0 }}<br>
+                <span class="result-text"><i>вероятность того, что система не занята</i></span></p>
+            <p><strong>L</strong>  = {{ result.L }}<br>
+                <span class="result-text"><i>среднее количество запросов в системе</i></span></p>
+            <p><strong>W</strong>  = {{ result.W }} сек.<br>
+                <span class="result-text"><i>среднее время, которое запрос проводит в системе</i></span></p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+
