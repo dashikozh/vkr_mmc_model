@@ -6,13 +6,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- див для отладки -->
-    <div class="debager">
-        <!-- <pre>
-            {{  result | tojson(indent=2) }}
-        </pre> -->
-    </div>
-    <!-- end -->
     <div class="container">
         <p>
             {{ result.log | safe }}
