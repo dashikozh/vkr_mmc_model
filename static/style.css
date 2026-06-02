@@ -50,3 +50,23 @@ button:hover {
 .red {
     color: red;
 }
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+input {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.d-none {
+    display: none;
+}
