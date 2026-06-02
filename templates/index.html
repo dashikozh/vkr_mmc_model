@@ -1,43 +1,88 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Модель Эрланга С</title>
+    <title>Модели Эрланга</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- див для отладки -->
+    <div class="debager">
+<!--         <pre>
+            {{  result | tojson(indent=2) }}
+        </pre> -->
+    </div>
+    <!-- end -->
     <div class="container">
         <p>
             {{ result.log | safe }}
         </p>
-        <h2>Модель Эрланга С</h2>
+        <h2>Модели Эрланга</h2>
         <form method="POST">
+            <label>Расчитать с помощью модели:</label>
+            <select class="jsModels" name="models">
+                <option value="mmc" {% if result.models == 'mmc' %} selected {% endif %}>M/M/c</option>
+                <option value="md1" {% if result.models == 'md1' %} selected {% endif %}>M/D/1</option>
+                <option value="mm1" {% if result.models == 'mm1' %} selected {% endif %}>M/M/1</option>
+            </select>
             <label>λ (частота поступления запросов):</label>
-            <input type="number" name="lam" required>
-            
+            <input type="number" name="lam" value="{{ result.lam or '24' }}" required>
             <label>μ (частота обслуживания каждого сервера):</label>
-            <input type="number" name="mu" required>
-            
-            <label>c (количество серверов):</label>
-            <input type="number" name="c" required>
-            
+            <input type="number" name="mu" value="{{ result.mu or '36' }}" required> 
+            <div class="jsServers">
+                <label>c (количество серверов):</label>
+                <input type="number" name="c" value="{{ result.c or '3' }}" required>
+            </div>
+            <div class="jsNRequest">
+                <label>n (вероятность того что в системе будет <b>n</b> запросов):</label>
+                <input type="number" name="n" value="{{ result.n or '2' }}" required>
+            </div>
             <button type="submit">Рассчитать</button>
         </form>
         {% if result.state %}
         <div class="result">
             <h3>Результаты:</h3>
-            <p><strong>U</strong> = {{ result.U }}<br>
+            {% if result.models != 'mm1' %}
+            <p><b>U</b> = {{ result.U }}<br>
                 <span class="result-text"><i>коэффициент использования серверов</i></span></p>
-            <p><strong>P<span style="font-size: 9px;">0</span></strong>  = {{ result.P0 }}<br>
+            {% endif %}
+            <p><b>P<span style="font-size: 9px;">0</span></b>  = {{ result.P0 }}<br>
                 <span class="result-text"><i>вероятность того, что система не занята</i></span></p>
-            <p><strong>L</strong>  = {{ result.L }}<br>
+            <p><b>L</b>  = {{ result.L }}<br>
                 <span class="result-text"><i>среднее количество запросов в системе</i></span></p>
-            <p><strong>W</strong>  = {{ result.W }} сек.<br>
+            <p><b>W</b>  = {{ result.W }} мин.<br>
                 <span class="result-text"><i>среднее время, которое запрос проводит в системе</i></span></p>
+            {% if result.models == 'mm1' %}
+            <p><b>P<span style="font-size: 9px;">(n)</span></b> = {{ result.Pn }}<br>
+                <span class="result-text"><i>вероятность того что в системе будет <b>n</b> запросов</i></span></p>
+            {% endif %}
         </div>
         {% endif %}
     </div>
 </body>
+<script>
+    function checkModels() {
+        let inputServers = document.querySelector('.jsServers'),
+            models       = document.querySelector('.jsModels').value,
+            nRequest     = document.querySelector('.jsNRequest');
+        
+        if (models == 'md1' || models == 'mm1') {
+            inputServers.classList.add('d-none');
+        } else {
+            inputServers.classList.remove('d-none');
+        }
+        if (models == 'mm1') {
+           nRequest.classList.remove('d-none') 
+        } else {
+           nRequest.classList.add('d-none'); 
+        }
+    }
+    // Проверка при загрузке
+    checkModels();
+    // Проверка при изменении
+    document.querySelector('.jsModels').onchange = checkModels;
+</script>
 </html>
+
 
 
